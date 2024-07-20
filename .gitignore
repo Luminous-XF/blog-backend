@@ -1,2 +1,4 @@
 .idea
 tmp
+storage/log
+config/config.yaml
