@@ -3,14 +3,15 @@ package config
 import "time"
 
 type Config struct {
-    AppConfig      AppConfig      `yaml:"app" mapstructure:"app"`
-    ServerConfig   ServerConfig   `yaml:"server" mapstructure:"server"`
-    LogConfig      LogConfig      `yaml:"log" mapstructure:"log"`
-    MySQLConfig    MySQLConfig    `yaml:"mysql" mapstructure:"mysql"`
-    DatabaseConfig DatabaseConfig `yaml:"database" mapstructure:"database"`
-    JWTConfig      JWTConfig      `yaml:"jwt" mapstructure:"jwt"`
-    RedisConfig    RedisConfig    `yaml:"redis" mapstructure:"redis"`
-    EmailConfig    EmailConfig    `yaml:"email" mapstructure:"email"`
+    AppConfig        AppConfig        `yaml:"app" mapstructure:"app"`
+    ServerConfig     ServerConfig     `yaml:"server" mapstructure:"server"`
+    LogConfig        LogConfig        `yaml:"log" mapstructure:"log"`
+    MySQLConfig      MySQLConfig      `yaml:"mysql" mapstructure:"mysql"`
+    DatabaseConfig   DatabaseConfig   `yaml:"database" mapstructure:"database"`
+    JWTConfig        JWTConfig        `yaml:"jwt" mapstructure:"jwt"`
+    RedisConfig      RedisConfig      `yaml:"redis" mapstructure:"redis"`
+    EmailConfig      EmailConfig      `yaml:"email" mapstructure:"email"`
+    VerifyCodeConfig VerifyCodeConfig `yaml:"verifyCode" mapstructure:"verifyCode"`
 }
 
 type AppConfig struct {
@@ -71,4 +72,9 @@ type RedisConfig struct {
 type EmailConfig struct {
     Addr       string `yaml:"addr"`
     LicenseKey string `yaml:"license"`
+}
+
+type VerifyCodeConfig struct {
+    Length int `yaml:"length" mapstructure:"length"`
+    Expire int `yaml:"expire" mapstructure:"expire"`
 }
