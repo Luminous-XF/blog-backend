@@ -5,6 +5,6 @@ import (
 	"blog-backend/pkg/logger"
 )
 
-func initLogger() *logger.Logger {
-	return logger.InitLogger(global.CONFIG)
+func initLogger() {
+	logger.InitLogger(global.CONFIG)
 }

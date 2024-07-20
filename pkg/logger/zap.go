@@ -1,3 +1,4 @@
+// Package logger zapLogger工具配置
 package logger
 
 import (
@@ -10,6 +11,7 @@ import (
 	"time"
 )
 
+// initLogger 初始化日志工具
 func initLogger(cfg *config.Config) {
 	// 获取日志写入介质
 	writeSyncer := getLogWriter(cfg)
@@ -37,16 +39,17 @@ func initLogger(cfg *config.Config) {
 	core := zapcore.NewCore(getEncoder(cfg), writeSyncer, logLevel)
 
 	// 初始化 zapLogger
-	zapLogger = zap.New(core,
+	logger = zap.New(core,
 		zap.AddCaller(),
 		zap.AddCallerSkip(1),
 		zap.AddStacktrace(zap.ErrorLevel),
 	)
 
 	// 将自定义的 zapLogger 替换为全局的logger
-	zap.ReplaceGlobals(zapLogger)
+	zap.ReplaceGlobals(logger)
 }
 
+// getLogWriter 设置日志写入介质
 func getLogWriter(cfg *config.Config) zapcore.WriteSyncer {
 	// 如果配置了按日期记录日志文件, 则重新定义文件名
 	logCfg := &cfg.LogConfig
@@ -74,6 +77,7 @@ func getLogWriter(cfg *config.Config) zapcore.WriteSyncer {
 	return zapcore.AddSync(lumberJackLogger)
 }
 
+// getEncoder
 func getEncoder(cfg *config.Config) zapcore.Encoder {
 	// 日志格式规则
 	encoderConfig := zapcore.EncoderConfig{

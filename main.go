@@ -3,6 +3,7 @@ package main
 import (
 	"blog-backend/global"
 	"blog-backend/initialize"
+	"blog-backend/pkg/logger"
 	"errors"
 	"fmt"
 	"go.uber.org/zap"
@@ -28,7 +29,7 @@ func main() {
 	}
 
 	if err := s.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		global.Logger.Error("listen:", zap.String("err", err.Error()))
+		logger.Error("listen:", zap.String("err", err.Error()))
 	}
 
 }

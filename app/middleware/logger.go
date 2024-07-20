@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"blog-backend/global"
 	"blog-backend/pkg/helper"
+	"blog-backend/pkg/logger"
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -66,11 +66,11 @@ func Logger() gin.HandlerFunc {
 		}
 
 		if responseStatus >= 400 && responseStatus < 500 {
-			global.Logger.Warn("HTTP Warning received with "+" status: "+strconv.Itoa(responseStatus)+" ", logFields...)
+			logger.Warn("HTTP Warning received with "+" status: "+strconv.Itoa(responseStatus)+" ", logFields...)
 		} else if responseStatus >= 500 && responseStatus < 600 {
-			global.Logger.Error("HTTP Error received with "+" status: "+strconv.Itoa(responseStatus)+" ", logFields...)
+			logger.Error("HTTP Error received with "+" status: "+strconv.Itoa(responseStatus)+" ", logFields...)
 		} else {
-			global.Logger.Info("HTTP Access log", logFields...)
+			logger.Info("HTTP Access log", logFields...)
 		}
 	}
 }

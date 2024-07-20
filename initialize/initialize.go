@@ -9,7 +9,7 @@ func InitProject() {
 	global.CONFIG = initConfig()
 
 	// 初始化日志工具
-	global.Logger = initLogger()
+	initLogger()
 
 	// 连接 MySQL 数据库
 	global.GDB = initDB()
