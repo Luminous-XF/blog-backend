@@ -121,13 +121,10 @@ func CreateUserWithEmailVerifyCode(
     }
 
     // 创建 User 实例
-    salt := helper.MakeStr(16, helper.DigitAlphaPunct)
-    password := helper.MD5(req.Password + salt)
     user := &model.User{
         UUID:     uuid.New(),
         Username: req.Username,
-        Salt:     salt,
-        Password: password,
+        Password: req.Password,
         Email:    req.Email,
     }
 
@@ -148,7 +145,7 @@ func CreateUserWithEmailVerifyCode(
         AvatarImageURL: user.AvatarImageURL,
     }
 
-    return rsp, error_code.SUCCESS
+    return rsp, error_code.CreateSuccess
 }
 
 // LoginByUsernameAndPassword 使用账号密码登录
@@ -222,5 +219,5 @@ func CreateToken(user *model.User) (tokenStr string, code error_code.ErrorCode) 
         return "", error_code.AuthTokenCreateFailed
     }
 
-    return tokenStr, error_code.SUCCESS
+    return tokenStr, error_code.CreateSuccess
 }

@@ -17,6 +17,10 @@ const (
     SUCCESS ErrorCode = iota + 200000000 // Ok!
 )
 
+const (
+    CreateSuccess ErrorCode = iota + 201000000 // Create Successful!
+)
+
 // 4xx000xxx 客户端错误
 const (
     ERROR          ErrorCode = iota + 400000000 // Error!

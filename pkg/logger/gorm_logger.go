@@ -26,32 +26,26 @@ func NewGormLogger() GormLogger {
     }
 }
 
-func (l GormLogger) LogMode(level gormlogger.LogLevel) gormlogger.Interface {
-    _ = level
+func (l GormLogger) LogMode(gormlogger.LogLevel) gormlogger.Interface {
     return GormLogger{
         ZapLogger:     l.ZapLogger,
         SlowThreshold: l.SlowThreshold,
     }
 }
 
-func (l GormLogger) Info(ctx context.Context, str string, args ...interface{}) {
-    _ = ctx
+func (l GormLogger) Info(_ context.Context, str string, args ...interface{}) {
     l.logger().Sugar().Debugf(str, args...)
 }
 
-func (l GormLogger) Warn(ctx context.Context, str string, args ...interface{}) {
-    _ = ctx
+func (l GormLogger) Warn(_ context.Context, str string, args ...interface{}) {
     l.logger().Sugar().Warnf(str, args...)
 }
 
-func (l GormLogger) Error(ctx context.Context, str string, args ...interface{}) {
-    _ = ctx
+func (l GormLogger) Error(_ context.Context, str string, args ...interface{}) {
     l.logger().Sugar().Errorf(str, args...)
 }
 
-func (l GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
-    _ = ctx
-
+func (l GormLogger) Trace(_ context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
     // 获取运行时间
     elapsed := time.Since(begin)
     // 获取 SQL 请求和返回条数
