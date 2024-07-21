@@ -1,37 +1,42 @@
 package v1
 
 import (
-	"blog-backend/app/common/error_code"
-	"blog-backend/app/common/request"
-	"blog-backend/app/common/response"
-	"blog-backend/app/service"
-	"github.com/gin-gonic/gin"
+    "blog-backend/app/common/error_code"
+    "blog-backend/app/common/request"
+    "blog-backend/app/common/response"
+    "blog-backend/app/service"
+    "fmt"
+    "github.com/gin-gonic/gin"
 )
 
 func GetPostList(ctx *gin.Context) {
-	var requestData request.PageInfoRequest
-	if err := ctx.ShouldBindBodyWithJSON(&requestData); err != nil {
-		response.CommonFailed(error_code.ParamBindError, error_code.ErrMsg(error_code.ParamBindError), ctx)
-		return
-	}
+    var req request.PageInfoRequest
+    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+        code := error_code.ParamBindError
+        response.CommonFailed(code, code.String(), ctx)
+        return
+    }
 
-	if responseData, code := service.GetPostList(requestData); !error_code.IsSuccess(code) {
-		response.CommonFailed(code, error_code.ErrMsg(code), ctx)
-	} else {
-		response.CommonSuccess(code, responseData, error_code.ErrMsg(code), ctx)
-	}
+    if rsp, code := service.GetPostList(req); !code.IsSuccess() {
+        response.CommonFailed(code, code.String(), ctx)
+    } else {
+        response.CommonSuccess(code, rsp, code.String(), ctx)
+    }
 }
 
 func GetPostInfoByUUID(ctx *gin.Context) {
-	var requestData request.GetByUUIDRequest
-	if err := ctx.ShouldBindBodyWithJSON(&requestData); err != nil {
-		response.CommonFailed(error_code.ParamBindError, error_code.ErrMsg(error_code.ParamBindError), ctx)
-		return
-	}
+    var req request.GetByUUIDRequest
+    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+        code := error_code.ParamBindError
+        response.CommonFailed(code, code.String(), ctx)
+        return
+    }
 
-	if responseData, code := service.GetPostByUUID(requestData); !error_code.IsSuccess(code) {
-		response.CommonFailed(code, error_code.ErrMsg(code), ctx)
-	} else {
-		response.CommonSuccess(code, responseData, error_code.ErrMsg(code), ctx)
-	}
+    if rsp, code := service.GetPostByUUID(req); !code.IsSuccess() {
+        fmt.Printf("Failed: %#v\n", rsp)
+        response.CommonFailed(code, code.String(), ctx)
+    } else {
+        fmt.Printf("Success: %#v\n", rsp)
+        response.CommonSuccess(code, rsp, code.String(), ctx)
+    }
 }

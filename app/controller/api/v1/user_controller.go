@@ -10,59 +10,64 @@ import (
 
 // GetUserInfoByUUID 通过 UUID 获取用户信息
 func GetUserInfoByUUID(ctx *gin.Context) {
-    var requestData request.GetByUUIDRequest
-    if err := ctx.ShouldBindBodyWithJSON(&requestData); err != nil {
-        response.CommonFailed(error_code.ParamBindError, error_code.ErrMsg(error_code.ParamBindError), ctx)
+    var req request.GetByUUIDRequest
+    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+        code := error_code.ParamBindError
+        response.CommonFailed(code, code.String(), ctx)
         return
     }
 
-    if responseDate, code := service.GetUserInfoByUUID(&requestData); !error_code.IsSuccess(code) {
-        response.CommonFailed(code, error_code.ErrMsg(code), ctx)
+    if rsp, code := service.GetUserInfoByUUID(&req); !code.IsSuccess() {
+        response.CommonFailed(code, code.String(), ctx)
     } else {
-        response.CommonSuccess(code, responseDate, error_code.ErrMsg(code), ctx)
+        response.CommonSuccess(code, rsp, code.String(), ctx)
     }
 }
 
 // CreateTokenByUsernamePassword 通过用户名密码登录获取 token
 func CreateTokenByUsernamePassword(ctx *gin.Context) {
-    var requestData request.LoginByUsernameAndPasswordRequest
-    if err := ctx.ShouldBindBodyWithJSON(&requestData); err != nil {
-        response.CommonFailed(error_code.ParamBindError, error_code.ErrMsg(error_code.ParamBindError), ctx)
+    var req request.LoginByUsernameAndPasswordRequest
+    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+        code := error_code.ParamBindError
+        response.CommonFailed(code, code.String(), ctx)
         return
     }
 
-    if responseData, code := service.LoginByUsernameAndPassword(&requestData); !error_code.IsSuccess(code) {
-        response.CommonFailed(code, error_code.ErrMsg(code), ctx)
+    if responseData, code := service.LoginByUsernameAndPassword(&req); !code.IsSuccess() {
+        response.CommonFailed(code, code.String(), ctx)
     } else {
-        response.Created(responseData, error_code.ErrMsg(code), ctx)
+        response.CommonSuccess(code, responseData, code.String(), ctx)
     }
 }
 
 // GetRegisterVerifyCodeWithEmail 通过邮箱发送验证码
 func GetRegisterVerifyCodeWithEmail(ctx *gin.Context) {
-    var requestData request.GetRegisterVerifyCodeWithEmailRequest
-    if err := ctx.ShouldBindBodyWithJSON(&requestData); err != nil {
-        response.CommonFailed(error_code.ParamBindError, error_code.ErrMsg(error_code.ParamBindError), ctx)
+    var req request.GetRegisterVerifyCodeWithEmailRequest
+    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+        code := error_code.ParamBindError
+        response.CommonFailed(code, code.String(), ctx)
         return
     }
 
-    if responseData, code := service.SendVerifyCodeWithEmail(&requestData, ctx.GetHeader("Trace-Id")); !error_code.IsSuccess(code) {
-        response.CommonFailed(code, error_code.ErrMsg(code), ctx)
+    if responseData, code := service.GetRegisterVerifyCodeWithEmail(&req, ctx.GetHeader("Trace-Id")); !code.IsSuccess() {
+        response.CommonFailed(code, code.String(), ctx)
     } else {
-        response.CommonSuccess(code, responseData, error_code.ErrMsg(code), ctx)
+        response.CommonSuccess(code, responseData, code.String(), ctx)
     }
 }
 
+// CreateUserByEmailVerifyCode 通过邮箱验证码注册账号
 func CreateUserByEmailVerifyCode(ctx *gin.Context) {
-    var requestData request.CreateUserByEmailVerifyCodeRequest
-    if err := ctx.ShouldBindBodyWithJSON(&requestData); err != nil {
-        response.CommonFailed(error_code.ParamBindError, error_code.ErrMsg(error_code.ParamBindError), ctx)
+    var req request.CreateUserByEmailVerifyCodeRequest
+    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+        code := error_code.ParamBindError
+        response.CommonFailed(code, code.String(), ctx)
         return
     }
 
-    if code := service.CreateUserWithEmailVerifyCode(&requestData); !error_code.IsSuccess(code) {
-        response.CommonFailed(code, error_code.ErrMsg(code), ctx)
+    if rsp, code := service.CreateUserWithEmailVerifyCode(&req); !code.IsSuccess() {
+        response.CommonFailed(code, code.String(), ctx)
     } else {
-        response.Created(nil, error_code.ErrMsg(code), ctx)
+        response.CommonSuccess(code, rsp, code.String(), ctx)
     }
 }

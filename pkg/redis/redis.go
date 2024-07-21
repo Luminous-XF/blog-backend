@@ -86,8 +86,9 @@ func (rdb *RDB) Get(key string) string {
 
 func (rdb *RDB) GetWithScan(key string, res interface{}) bool {
     if err := rdb.Client.Get(rdb.Context, key).Scan(res); err != nil {
-        logger.ErrorString("Redis", "GetWithScan", err.Error())
-        return false
+        if !errors.Is(err, redislib.Nil) {
+            logger.ErrorString("Redis", "GetWithScan", err.Error())
+        }
     }
 
     return true
