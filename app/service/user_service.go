@@ -1,12 +1,14 @@
 package service
 
 import (
+    "blog-backend/app/common/constant"
     "blog-backend/app/common/error_code"
     "blog-backend/app/common/redis_model"
     "blog-backend/app/common/request"
     "blog-backend/app/common/response"
     "blog-backend/app/database/mapper"
     "blog-backend/app/model"
+    "blog-backend/config"
     "blog-backend/global"
     "blog-backend/pkg/email"
     "blog-backend/pkg/helper"
@@ -56,19 +58,19 @@ func GetRegisterVerifyCodeWithEmail(
 
     // 生成验证码
     verifyCode := helper.MakeStr(
-        global.CONFIG.VerifyCodeConfig.Length,
+        config.CONFIG.VerifyCodeConfig.Length,
         helper.DigitAlpha,
     )
 
     // 将验证码存入 Redis
-    key := global.VerifyCodeKeyPrefix + requestId
+    key := constant.VerifyCodeKeyPrefix + requestId
     value := &redis_model.RegisterUserInfo{
         Username:   req.Username,
         Password:   req.Password,
         Email:      req.Email,
         VerifyCode: verifyCode,
     }
-    expire := time.Second * time.Duration(global.CONFIG.VerifyCodeConfig.Expire)
+    expire := time.Second * time.Duration(config.CONFIG.VerifyCodeConfig.Expire)
     global.RDB.Set(key, value, expire)
 
     // 发送邮件
@@ -103,7 +105,7 @@ func CreateUserWithEmailVerifyCode(
     }
 
     // 校验验证码
-    key := global.VerifyCodeKeyPrefix + req.RequestID
+    key := constant.VerifyCodeKeyPrefix + req.RequestID
     value := &redis_model.RegisterUserInfo{}
     if !global.RDB.GetWithScan(key, value) {
         return nil, error_code.RedisError
@@ -179,7 +181,7 @@ func LoginByUsernameAndPassword(
         Token: tokenStr,
     }
 
-    return rsp, error_code.SUCCESS
+    return rsp, error_code.CreateSuccess
 }
 
 // IsUsernameExist 判断用户名是否存在
@@ -197,7 +199,7 @@ func IsEmailExist(email string) (*model.User, bool) {
 // CreateToken 创建 Token
 func CreateToken(user *model.User) (tokenStr string, code error_code.ErrorCode) {
     j := &jwt.JWT{
-        SigningKey: []byte(global.CONFIG.JWTConfig.SigningKey),
+        SigningKey: []byte(config.CONFIG.JWTConfig.SigningKey),
     }
 
     claims := jwt.CustomClaims{
@@ -206,7 +208,7 @@ func CreateToken(user *model.User) (tokenStr string, code error_code.ErrorCode) 
         RegisteredClaims: jwtlib.RegisteredClaims{
             ID: uuid.New().String(),
             ExpiresAt: jwtlib.NewNumericDate(
-                time.Now().Add(time.Second * time.Duration(global.CONFIG.JWTConfig.ExpiresTime)),
+                time.Now().Add(time.Second * time.Duration(config.CONFIG.JWTConfig.ExpiresTime)),
             ),
             NotBefore: jwtlib.NewNumericDate(time.Now()),
             Issuer:    "Luminous",

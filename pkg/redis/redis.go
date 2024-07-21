@@ -25,16 +25,18 @@ type RDB struct {
 }
 
 // InitRedis 初始化 Redis 并返回一个 redis 实例
-func InitRedis(cfg *config.RedisConfig) *RDB {
+func InitRedis() *RDB {
     once.Do(func() {
-        rdb = connect(cfg)
+        rdb = connect()
     })
 
     return rdb
 }
 
 // connect 连接 Redis
-func connect(cfg *config.RedisConfig) *RDB {
+func connect() *RDB {
+    cfg := &config.CONFIG.RedisConfig
+
     if len(cfg.Addr) == 0 {
         panic("redis addr is empty")
     }

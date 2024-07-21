@@ -2,6 +2,10 @@ package config
 
 import "time"
 
+var (
+    CONFIG *Config
+)
+
 type Config struct {
     AppConfig        AppConfig        `yaml:"app" mapstructure:"app"`
     ServerConfig     ServerConfig     `yaml:"server" mapstructure:"server"`

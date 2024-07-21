@@ -1,6 +1,7 @@
 package main
 
 import (
+    "blog-backend/config"
     "blog-backend/global"
     "blog-backend/initialize"
     "blog-backend/pkg/logger"
@@ -16,9 +17,9 @@ func init() {
 }
 
 func main() {
-    addr := fmt.Sprintf(":%d", global.CONFIG.ServerConfig.Addr)
-    ReadTimeout := global.CONFIG.ServerConfig.ReadTimeout
-    WriteTimeout := global.CONFIG.ServerConfig.WriteTimeout
+    addr := fmt.Sprintf(":%d", config.CONFIG.ServerConfig.Addr)
+    ReadTimeout := config.CONFIG.ServerConfig.ReadTimeout
+    WriteTimeout := config.CONFIG.ServerConfig.WriteTimeout
 
     s := &http.Server{
         Addr:           addr,
