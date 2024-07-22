@@ -6,7 +6,7 @@ import (
     "blog-backend/app/common/redis_model"
     "blog-backend/app/common/request"
     "blog-backend/app/common/response"
-    "blog-backend/app/database/mapper"
+    "blog-backend/app/database"
     "blog-backend/app/model"
     "blog-backend/config"
     "blog-backend/global"
@@ -24,7 +24,7 @@ import (
 func GetUserInfoByUUID(
         req *request.GetByUUIDRequest,
 ) (rsp *response.UserResponse, code error_code.ErrorCode) {
-    user, err := mapper.GetUserByUUID(req.UUID)
+    user, err := database.GetUserByUUID(req.UUID)
     if err != nil {
         if errors.Is(err, gorm.ErrRecordNotFound) {
             return nil, error_code.UsernameIsNotExist
@@ -131,7 +131,7 @@ func CreateUserWithEmailVerifyCode(
     }
 
     // 创建 User 记录, 入库
-    if err := mapper.CreateUser(user); err != nil {
+    if err := database.CreateUser(user); err != nil {
         if errors.Is(err, gorm.ErrDuplicatedKey) {
             return nil, error_code.UsernameAlreadyExists
         }
@@ -186,13 +186,13 @@ func LoginByUsernameAndPassword(
 
 // IsUsernameExist 判断用户名是否存在
 func IsUsernameExist(username string) (*model.User, bool) {
-    user, err := mapper.GetUserByUsername(username)
+    user, err := database.GetUserByUsername(username)
     return user, (err == nil || !errors.Is(err, gorm.ErrRecordNotFound)) && user != nil
 }
 
 // IsEmailExist 判断邮箱是否存在
 func IsEmailExist(email string) (*model.User, bool) {
-    user, err := mapper.GetUserByEmail(email)
+    user, err := database.GetUserByEmail(email)
     return user, (err == nil || !errors.Is(err, gorm.ErrRecordNotFound)) && user != nil
 }
 
