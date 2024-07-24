@@ -20,7 +20,7 @@ func JWTAuth() gin.HandlerFunc {
 
         j := jwt.NewJWT()
         claims, code := j.ParseToken(tokenStr)
-        if code.IsSuccess() {
+        if !code.IsSuccess() {
             response.CommonFailed(code, code.String(), ctx)
             ctx.Abort()
             return
@@ -32,11 +32,6 @@ func JWTAuth() gin.HandlerFunc {
             ctx.Abort()
             return
         }
-
-        // if claims.ExpiresAt.Unix()-time.Now().Unix() < global.CONFIG.JWTConfig.BufferTime {
-        // 	claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Second * time.Duration(global.CONFIG.JWTConfig.ExpiresTime)))
-        //
-        // }
 
         ctx.Set("claims", claims)
         ctx.Next()

@@ -24,22 +24,6 @@ func GetUserInfoByUUID(ctx *gin.Context) {
     }
 }
 
-// CreateTokenByUsernamePassword 通过用户名密码登录获取 token
-func CreateTokenByUsernamePassword(ctx *gin.Context) {
-    var req request.LoginByUsernameAndPasswordRequest
-    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
-        code := error_code.ParamBindError
-        response.CommonFailed(code, code.String(), ctx)
-        return
-    }
-
-    if responseData, code := service.LoginByUsernameAndPassword(&req); !code.IsSuccess() {
-        response.CommonFailed(code, code.String(), ctx)
-    } else {
-        response.CommonSuccess(code, responseData, code.String(), ctx)
-    }
-}
-
 // GetRegisterVerifyCodeWithEmail 通过邮箱发送验证码
 func GetRegisterVerifyCodeWithEmail(ctx *gin.Context) {
     var req request.GetRegisterVerifyCodeWithEmailRequest

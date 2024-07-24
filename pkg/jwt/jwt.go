@@ -2,10 +2,12 @@ package jwt
 
 import (
     "blog-backend/app/common/error_code"
+    "blog-backend/app/model"
     "blog-backend/config"
     "errors"
     "github.com/golang-jwt/jwt/v4"
     "github.com/google/uuid"
+    "time"
 )
 
 type CustomClaims struct {
@@ -25,8 +27,42 @@ func NewJWT() *JWT {
     }
 }
 
-// GenToken 生成 Token
-func (j *JWT) GenToken(claims CustomClaims) (string, error) {
+// GenAccessToken 生成 Access Token
+func (j *JWT) GenAccessToken(user *model.User, tokenID string) (string, error) {
+    claims := CustomClaims{
+        UUID:     user.UUID,
+        Username: user.Username,
+        RegisteredClaims: jwt.RegisteredClaims{
+            ID: tokenID,
+            ExpiresAt: jwt.NewNumericDate(
+                time.Now().Add(time.Second * time.Duration(config.CONFIG.JWTConfig.ExpiresTime)),
+            ),
+            NotBefore: jwt.NewNumericDate(time.Now()),
+            Issuer:    config.CONFIG.JWTConfig.Issuer,
+            IssuedAt:  jwt.NewNumericDate(time.Now()),
+        },
+    }
+
+    tokenStr := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    return tokenStr.SignedString(j.SigningKey)
+}
+
+// GenRefreshToken 生成 Refresh Token
+func (j *JWT) GenRefreshToken(user *model.User, tokenID string) (string, error) {
+    claims := CustomClaims{
+        UUID:     user.UUID,
+        Username: user.Username,
+        RegisteredClaims: jwt.RegisteredClaims{
+            ID: tokenID,
+            ExpiresAt: jwt.NewNumericDate(
+                time.Now().Add(time.Second * time.Duration(config.CONFIG.JWTConfig.StorageTime)),
+            ),
+            NotBefore: jwt.NewNumericDate(time.Now()),
+            Issuer:    config.CONFIG.JWTConfig.Issuer,
+            IssuedAt:  jwt.NewNumericDate(time.Now()),
+        },
+    }
+
     tokenStr := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     return tokenStr.SignedString(j.SigningKey)
 }

@@ -35,7 +35,11 @@ const (
     EmailAlreadyInUse                                  // The email address is already in use.
     RegisterInfoMismatch                               // Information mismatch.
     VerifyCodeExpired                                  // The Verification code does not exist or has expired.
-    AuthFailed                                         // Auth failed.
+    RefreshTokenInvalid                                // The refresh token is invalid.
+)
+
+const (
+    AuthFailed            ErrorCode = iota + 401001000 // Auth failed.
     AuthTokenNULL                                      // No authorization token found.
     AuthTokenExpired                                   // Auth token is expired.
     AuthTokenNotValidYet                               // Auth token is not valid.

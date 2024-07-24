@@ -62,7 +62,8 @@ type DatabaseConfig struct {
 type JWTConfig struct {
     SigningKey  string `yaml:"signingKey"`
     ExpiresTime int64  `yaml:"expiresTime"`
-    BufferTime  int64  `yaml:"bufferTime"`
+    StorageTime int64  `yaml:"bufferTime"`
+    Issuer      string `yaml:"issuer"`
 }
 
 // RedisConfig Redis 配置信息

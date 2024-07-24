@@ -12,11 +12,10 @@ import (
     "blog-backend/global"
     "blog-backend/pkg/email"
     "blog-backend/pkg/helper"
-    "blog-backend/pkg/jwt"
     "errors"
-    jwtlib "github.com/golang-jwt/jwt/v4"
     "github.com/google/uuid"
     "gorm.io/gorm"
+    "strings"
     "time"
 )
 
@@ -111,7 +110,8 @@ func CreateUserWithEmailVerifyCode(
         return nil, error_code.RedisError
     }
 
-    if value.VerifyCode != req.VerifyCode {
+    if strings.ToUpper(value.VerifyCode) !=
+            strings.ToUpper(req.VerifyCode) {
         return nil, error_code.VerifyCodeExpired
     }
 
@@ -165,20 +165,19 @@ func LoginByUsernameAndPassword(
         return nil, error_code.PasswordVerifyFailed
     }
 
-    tokenStr, code := CreateToken(user)
+    accessTokenStr, code := CreateAccessToken(user)
+    if !code.IsSuccess() {
+        return nil, code
+    }
+
+    refreshTokenStr, code := RefreshToken(user)
     if !code.IsSuccess() {
         return nil, code
     }
 
     rsp = &response.LoginResponse{
-        User: response.UserResponse{
-            UUID:           user.UUID,
-            Username:       user.Username,
-            Nickname:       user.Nickname,
-            Email:          user.Email,
-            AvatarImageURL: user.AvatarImageURL,
-        },
-        Token: tokenStr,
+        AccessToken:  accessTokenStr,
+        RefreshToken: refreshTokenStr,
     }
 
     return rsp, error_code.CreateSuccess
@@ -194,32 +193,4 @@ func IsUsernameExist(username string) (*model.User, bool) {
 func IsEmailExist(email string) (*model.User, bool) {
     user, err := database.GetUserByEmail(email)
     return user, (err == nil || !errors.Is(err, gorm.ErrRecordNotFound)) && user != nil
-}
-
-// CreateToken 创建 Token
-func CreateToken(user *model.User) (tokenStr string, code error_code.ErrorCode) {
-    j := &jwt.JWT{
-        SigningKey: []byte(config.CONFIG.JWTConfig.SigningKey),
-    }
-
-    claims := jwt.CustomClaims{
-        UUID:     user.UUID,
-        Username: user.Username,
-        RegisteredClaims: jwtlib.RegisteredClaims{
-            ID: uuid.New().String(),
-            ExpiresAt: jwtlib.NewNumericDate(
-                time.Now().Add(time.Second * time.Duration(config.CONFIG.JWTConfig.ExpiresTime)),
-            ),
-            NotBefore: jwtlib.NewNumericDate(time.Now()),
-            Issuer:    "Luminous",
-            IssuedAt:  jwtlib.NewNumericDate(time.Now()),
-        },
-    }
-
-    tokenStr, err := j.GenToken(claims)
-    if err != nil {
-        return "", error_code.AuthTokenCreateFailed
-    }
-
-    return tokenStr, error_code.CreateSuccess
 }

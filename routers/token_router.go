@@ -9,5 +9,6 @@ func InitTokenPublicRouter(Router *gin.RouterGroup) {
     TokenRouter := Router.Group("tokens")
     {
         TokenRouter.POST("/username-password", v1.CreateTokenByUsernamePassword)
+        TokenRouter.GET("/refresh-token", v1.CreateTokenByRefreshToken)
     }
 }

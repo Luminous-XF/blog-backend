@@ -18,8 +18,8 @@ func newProducer(ctx context.Context) *producer {
 // publish 发布消息到 Redis 中
 func (p *producer) publish(rdb *redis.Client, topic string, msg *Message) (int64, error) {
     z := redis.Z{
-        Score:  msg.GetScore(),
         Member: msg.GetID(),
+        Score:  msg.GetScore(),
     }
 
     // 将消息写入有序集合

@@ -45,5 +45,5 @@ func TestRedisMQ(t *testing.T) {
     }
     fmt.Println(v)
 
-    time.Sleep(3 * time.Second)
+    time.Sleep(60 * time.Second)
 }
