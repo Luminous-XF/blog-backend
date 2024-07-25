@@ -8,7 +8,11 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-// CreateTokenByUsernamePassword 通过用户名密码登录获取 token
+//
+// CreateTokenByUsernamePassword
+//  @Description: 通过用户名密码登录获取 token
+//  @param ctx
+//
 func CreateTokenByUsernamePassword(ctx *gin.Context) {
     var req request.LoginByUsernameAndPasswordRequest
     if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
@@ -24,7 +28,11 @@ func CreateTokenByUsernamePassword(ctx *gin.Context) {
     }
 }
 
-// CreateTokenByRefreshToken 通过 Refresh Token 刷新 Access Token
+//
+// CreateTokenByRefreshToken
+//  @Description: 通过 Refresh Token 刷新 Access Token
+//  @param ctx
+//
 func CreateTokenByRefreshToken(ctx *gin.Context) {
     var req request.CreateTokenByRefreshTokenRequest
     req.RefreshToken = ctx.GetHeader("refreshToken")

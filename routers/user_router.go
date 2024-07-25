@@ -9,8 +9,8 @@ func InitUserPublicRouter(Router *gin.RouterGroup) {
     UserRouter := Router.Group("users")
     {
         UserRouter.POST("/verify-code/using-email", v1.GetRegisterVerifyCodeWithEmail)
-        UserRouter.POST("/register", v1.CreateUserByEmailVerifyCode)
-        UserRouter.POST("/uuid", v1.GetUserInfoByUUID)
+        UserRouter.POST("", v1.CreateUserByEmailVerifyCode)
+        UserRouter.GET("/:uuid", v1.GetUserInfoByUUID)
     }
 }
 

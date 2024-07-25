@@ -6,12 +6,19 @@ import (
     "blog-backend/app/common/response"
     "blog-backend/app/service"
     "github.com/gin-gonic/gin"
+    "github.com/google/uuid"
 )
 
-// GetUserInfoByUUID 通过 UUID 获取用户信息
+//
+// GetUserInfoByUUID
+//  @Description: 通过 UUID 获取用户信息
+//  @param ctx
+//
 func GetUserInfoByUUID(ctx *gin.Context) {
     var req request.GetByUUIDRequest
-    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+    var err error
+    req.UUID, err = uuid.Parse(ctx.Param("uuid"))
+    if err != nil {
         code := error_code.ParamBindError
         response.CommonFailed(code, code.String(), ctx)
         return
@@ -24,7 +31,11 @@ func GetUserInfoByUUID(ctx *gin.Context) {
     }
 }
 
-// GetRegisterVerifyCodeWithEmail 通过邮箱发送验证码
+//
+// GetRegisterVerifyCodeWithEmail
+//  @Description: 通过邮箱发送验证码
+//  @param ctx
+//
 func GetRegisterVerifyCodeWithEmail(ctx *gin.Context) {
     var req request.GetRegisterVerifyCodeWithEmailRequest
     if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
@@ -40,7 +51,11 @@ func GetRegisterVerifyCodeWithEmail(ctx *gin.Context) {
     }
 }
 
-// CreateUserByEmailVerifyCode 通过邮箱验证码注册账号
+//
+// CreateUserByEmailVerifyCode
+//  @Description: 通过邮箱验证码注册账号
+//  @param ctx
+//
 func CreateUserByEmailVerifyCode(ctx *gin.Context) {
     var req request.CreateUserByEmailVerifyCodeRequest
     if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {

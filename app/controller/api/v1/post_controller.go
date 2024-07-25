@@ -7,11 +7,17 @@ import (
     "blog-backend/app/service"
     "fmt"
     "github.com/gin-gonic/gin"
+    "github.com/google/uuid"
 )
 
+//
+// GetPostList
+//  @Description: 获取帖子列表
+//  @param ctx
+//
 func GetPostList(ctx *gin.Context) {
     var req request.PageInfoRequest
-    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+    if err := ctx.ShouldBindQuery(&req); err != nil {
         code := error_code.ParamBindError
         response.CommonFailed(code, code.String(), ctx)
         return
@@ -24,9 +30,16 @@ func GetPostList(ctx *gin.Context) {
     }
 }
 
+//
+// GetPostInfoByUUID
+//  @Description: 通过帖子 UUID 查找帖子
+//  @param ctx
+//
 func GetPostInfoByUUID(ctx *gin.Context) {
     var req request.GetByUUIDRequest
-    if err := ctx.ShouldBindBodyWithJSON(&req); err != nil {
+    var err error
+    req.UUID, err = uuid.Parse(ctx.Param("uuid"))
+    if err != nil {
         code := error_code.ParamBindError
         response.CommonFailed(code, code.String(), ctx)
         return
